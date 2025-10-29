@@ -1,0 +1,24 @@
+{
+  "name": "dmv",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "db:schema": "psql -d dmv -f db/schema.sql",
+    "db:seed": "psql -d dmv -f db/seed.sql",
+    "db:reset": "npm run db:schema && npm run db:seed"
+  },
+  "imports": {
+    "#*": "./*.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "pg": "^8.14.1"
+  },
+  "devDependencies": {
+    "vitest": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
