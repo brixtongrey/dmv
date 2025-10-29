@@ -43,8 +43,7 @@ export async function getPersonsWithoutLicense() {
 /** @returns all persons with their license attached if they have one */
 export async function getPersonsIncludingLicense() {
   const sql = `
-  SELECT
-    *,
+  SELECT *,
     (
       SELECT to_json(licenses)
       FROM licenses
@@ -74,4 +73,22 @@ export async function getPersonById(id) {
  */
 export async function getPersonByIdIncludingLicense(id) {
   // TODO
+  try {
+    const sql = `
+    SELECT *,
+      (
+        SELECT to_json(licenses)
+        FROM licenses
+        WHERE licences.person_id = persons.id
+      ) AS license 
+       FROM persons
+       WHERE persons.id = $1
+    `;
+    const {
+      rows: [person],
+    } = await db.query(sql, [id]);
+    return person;
+  } catch(error) {
+    console.error(`Error fetching person by ${id} including license: ${error}`)
+  }
 }

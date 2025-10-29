@@ -13,6 +13,21 @@ export async function getLicenses() {
 /** @returns all licenses with their persons attached */
 export async function getLicensesIncludingPerson() {
   // TODO
+    try {
+    const sql = `
+      SELECT licenses.*,
+      (
+      SELECT to_json(persons)
+      FROM persons
+      WHERE persons.id = licenses.person_id
+      ) AS person
+       FROM licenses
+    `;
+    const { rows: licenses } = await db.query(sql);
+    return licenses;
+  } catch (error) {
+    console.error("Error fetching licenses including person:", error);
+  }
 }
 
 /** @returns the license specified by id */
@@ -31,6 +46,23 @@ export async function getLicenseById(id) {
 /** @returns the license specified by id with its person attached */
 export async function getLicenseByIdIncludingPerson(id) {
   // TODO
+  try {
+    const sql = `
+      SELECT licenses.*,
+      (
+        SELECT to_json(persons)
+        FROM persons
+        WHERE persons.id = licenses.person_id
+      ) AS person
+       FROM licenses
+       WHERE id = $1
+    `;
+    const { rows: [license], 
+    } = await db.query(sql, [id])
+    return license;
+  } catch (error) {
+    console.error("Error fetching licenses including person:", error);
+  }
 }
 
 /**
@@ -39,4 +71,17 @@ export async function getLicenseByIdIncludingPerson(id) {
  */
 export async function getLicenseByPersonId(id) {
   // TODO
+  try {
+    const sql = `
+      SELECT * 
+      FROM licenses
+      WHERE person_id = $1
+    `;
+    const { 
+      rows: [license],
+    } = await db.query(sql, [id]);
+    return license;
+  } catch (error) {
+    console.error("Error fetching license by person id", id, error);
+  }
 }
