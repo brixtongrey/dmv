@@ -79,7 +79,7 @@ export async function getPersonByIdIncludingLicense(id) {
       (
         SELECT to_json(licenses)
         FROM licenses
-        WHERE licences.person_id = persons.id
+        WHERE licenses.person_id = persons.id
       ) AS license 
        FROM persons
        WHERE persons.id = $1
