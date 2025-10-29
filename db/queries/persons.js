@@ -25,6 +25,19 @@ export async function getPersonsWithLicense() {
 /** @returns all persons who do not have a license */
 export async function getPersonsWithoutLicense() {
   // TODO
+  try {
+    const sql = `
+    SELECT persons.* 
+    FROM persons
+    LEFT JOIN licenses ON persons.id = licenses.person_id
+    WHERE licenses.id IS NULL;
+    `;
+    const {rows: persons} = await db.query(sql);
+    return persons;
+  } catch (error) {
+    console.error(`Error fetching person without license: ${error}`);
+    throw error;
+  }
 }
 
 /** @returns all persons with their license attached if they have one */
